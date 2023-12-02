@@ -62,12 +62,17 @@ const gameflow = function (playerA, playerB) {
   let currentPlayerIndex = 0;
   const players = [playerA, playerB];
 
-  let x = 0;
+  let turn = 1;
+  let gameState = true;
   do {
     const currentPlayer = players[currentPlayerIndex];
     console.log(`${currentPlayer.name}'s turn (${currentPlayer.markSymbol})`);
     // Transform "XY" to [X int, Y int]
     const coordinates = askUserCoordinates();
+    if (coordinates === null) {
+      gameState = false;
+      break;
+    }
     // -1 is for "real" coordinates
     // since input is assuming indexed 1. (first cell is at (1, 1))
 
@@ -77,12 +82,25 @@ const gameflow = function (playerA, playerB) {
       gameBoard.mark(coordinates, currentPlayer.markSymbol);
     }
 
-    console.log(checkForWinner(gameBoard));
-    currentPlayerIndex = currentPlayerIndex == 1 ? 0 : 1;
-    x++;
-    console.log(gameBoard.board);
-  } while (x < DEBUG_NTURNS);
+    currentPlayerIndex = switchPlayer(currentPlayerIndex);
+
+    if (checkForWinner(gameBoard)) {
+      console.log("SOMEONE WON?");
+      gameState = false;
+    }
+
+    if (turn === 9) {
+      console.log("ITS A DRAW!");
+    }
+    console.log(gameBoard.getBoard());
+    turn++;
+  } while (gameState);
 };
+
+function switchPlayer(currentPlayerIndex) {
+  currentPlayerIndex = currentPlayerIndex == 1 ? 0 : 1;
+  return currentPlayerIndex;
+}
 
 function checkForWinner(gameboard) {
   const winCombinations = [
@@ -145,9 +163,12 @@ function checkForWinner(gameboard) {
 
 // Helper functions
 function askUserCoordinates() {
-  return prompt("Coordinates: (1, 1) through (3, 3)")
-    .split("")
-    .map((x) => +x - 1);
+  let input = prompt("Coordinates: (1, 1) through (3, 3)");
+  if (input !== null) {
+    input = input.split("").map((x) => +x - 1);
+  }
+
+  return input;
   // -1 is for "real" coordinates
   // since input is assumed to be 1-indexed. (first cell is at (1, 1))
 }
