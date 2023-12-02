@@ -9,21 +9,22 @@ const gameBoard = (function () {
   ];
 
   const mark = function (coordinates, markSymbol) {
-    // Marks the `coordinates` with `markSymbol`.
-    // Returns 1 if successful, 0 otherwise
-
     const [x, y] = coordinates;
-    if (board[x][y] === null) {
-      board[x][y] = markSymbol;
-      return 1;
-    }
-    return 0;
+    board[x][y] = markSymbol;
   };
 
-  return { board, mark };
+  const cellMarked = function (coordinates) {
+    // Check if the `coordinates` point to a marked cell (unmarked cells are NULL).
+    // Returns a boolean. `true` if marked `false` otherwise.
+
+    const [x, y] = coordinates;
+    return board[x][y] === !null;
+  };
+
+  return { board, mark, cellMarked };
 })();
 
-function createPlayer(markSymbol) {
+function createPlayer(name, markSymbol) {
   let score = 0;
 
   const getScore = function () {
@@ -38,7 +39,7 @@ function createPlayer(markSymbol) {
     score++;
   };
 
-  return { markSymbol, win, getScore, resetScore };
+  return { name, markSymbol, win, getScore, resetScore };
 }
 
 const gameflow = function (playerA, playerB) {
@@ -47,14 +48,16 @@ const gameflow = function (playerA, playerB) {
 
   let x = 0;
   do {
+    const currentPlayer = players[currentPlayerIndex];
+    console.log(`${currentPlayer.name}'s turn (${currentPlayer.markSymbol})`);
     // Transform "XY" to [X int, Y int]
     const coordinates = askUserCoordinates(); // -1 is for "real" coordinates
     // since input is assuming indexed 1. (first cell is at (1, 1))
 
-    const currentPlayer = players[currentPlayerIndex];
-
-    if (gameBoard.mark(coordinates, currentPlayer.markSymbol) === 0) {
+    if (gameBoard.cellMarked(coordinates)) {
       console.log(`(${coordinates.map((x) => x + 1)}) is already marked. Change location.`);
+    } else {
+      gameBoard.mark(coordinates, currentPlayer.markSymbol);
     }
 
     currentPlayerIndex = currentPlayerIndex == 1 ? 0 : 1;
@@ -70,6 +73,10 @@ function askUserCoordinates() {
     .map((x) => +x - 1);
 }
 
-const p1 = createPlayer("x");
-const p2 = createPlayer("o");
-const g = gameflow(p1, p2);
+const p1 = createPlayer("Alice", "X");
+const p2 = createPlayer("Bob", "O");
+
+const btn = document.querySelector("#btn");
+btn.addEventListener("click", () => {
+  gameflow(p1, p2);
+});
