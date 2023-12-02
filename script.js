@@ -82,17 +82,18 @@ const gameflow = function (playerA, playerB) {
       gameBoard.mark(coordinates, currentPlayer.markSymbol);
     }
 
+    printboard(gameBoard);
     currentPlayerIndex = switchPlayer(currentPlayerIndex);
 
     if (checkForWinner(gameBoard)) {
-      console.log("SOMEONE WON?");
+      const winner = getWinner(gameBoard, players);
+      console.log(`${winner.name} wins!`);
       gameState = false;
     }
 
     if (turn === 9) {
       console.log("ITS A DRAW!");
     }
-    console.log(gameBoard.getBoard());
     turn++;
   } while (gameState);
 };
@@ -161,7 +162,66 @@ function checkForWinner(gameboard) {
   return false;
 }
 
-// Helper functions
+function getWinner(gameboard, players) {
+  const winCombinations = [
+    // Horizontal combinations
+    [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+    ],
+    [
+      [1, 0],
+      [1, 1],
+      [1, 2],
+    ],
+    [
+      [2, 0],
+      [2, 1],
+      [2, 2],
+    ],
+    // Vertical combinations
+    [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [2, 1],
+    ],
+    [
+      [0, 2],
+      [1, 2],
+      [2, 2],
+    ],
+    // Diagonal
+    [
+      [0, 0],
+      [1, 1],
+      [2, 2],
+    ],
+    [
+      [2, 0],
+      [1, 1],
+      [0, 2],
+    ],
+  ];
+
+  for (let i = 0; i < winCombinations.length; i++) {
+    const cellA = gameboard.getCell(winCombinations[i][0]);
+    const cellB = gameboard.getCell(winCombinations[i][1]);
+    const cellC = gameboard.getCell(winCombinations[i][2]);
+
+    if (cellA === cellB && cellA === cellC && cellA !== null) {
+      return players.find((player) => {
+        return player.markSymbol === cellA;
+      });
+    }
+  }
+}
+
 function askUserCoordinates() {
   let input = prompt("Coordinates: (1, 1) through (3, 3)");
   if (input !== null) {
@@ -173,10 +233,17 @@ function askUserCoordinates() {
   // since input is assumed to be 1-indexed. (first cell is at (1, 1))
 }
 
+function printboard(gameboard) {
+  for (let i = 0; i < gameBoard.getBoard().length; i++) {
+    console.log(gameboard.getBoard()[i]);
+  }
+}
+
 const p1 = createPlayer("Alice", "X");
 const p2 = createPlayer("Bob", "O");
 
 const btn = document.querySelector("#btn");
 btn.addEventListener("click", () => {
+  gameBoard.resetBoard();
   gameflow(p1, p2);
 });
