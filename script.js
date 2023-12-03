@@ -1,5 +1,50 @@
 // Variables for testing.
 const DEBUG_NTURNS = 5;
+const WIN_COMBINATIONS = [
+  // Horizontal combinations
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+  ],
+  [
+    [1, 0],
+    [1, 1],
+    [1, 2],
+  ],
+  [
+    [2, 0],
+    [2, 1],
+    [2, 2],
+  ],
+  // Vertical combinations
+  [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+  ],
+  [
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [0, 2],
+    [1, 2],
+    [2, 2],
+  ],
+  // Diagonal
+  [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+  ],
+  [
+    [2, 0],
+    [1, 1],
+    [0, 2],
+  ],
+];
 
 const gameBoard = (function () {
   let board = [
@@ -78,6 +123,7 @@ const gameflow = function (playerA, playerB) {
 
     if (gameBoard.cellMarked(coordinates)) {
       console.log(`(${coordinates.map((x) => x + 1)}) is already marked. Change location.`);
+      continue;
     } else {
       gameBoard.mark(coordinates, currentPlayer.markSymbol);
     }
@@ -104,56 +150,10 @@ function switchPlayer(currentPlayerIndex) {
 }
 
 function checkForWinner(gameboard) {
-  const winCombinations = [
-    // Horizontal combinations
-    [
-      [0, 0],
-      [0, 1],
-      [0, 2],
-    ],
-    [
-      [1, 0],
-      [1, 1],
-      [1, 2],
-    ],
-    [
-      [2, 0],
-      [2, 1],
-      [2, 2],
-    ],
-    // Vertical combinations
-    [
-      [0, 0],
-      [1, 0],
-      [2, 0],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [2, 1],
-    ],
-    [
-      [0, 2],
-      [1, 2],
-      [2, 2],
-    ],
-    // Diagonal
-    [
-      [0, 0],
-      [1, 1],
-      [2, 2],
-    ],
-    [
-      [2, 0],
-      [1, 1],
-      [0, 2],
-    ],
-  ];
-
-  for (let i = 0; i < winCombinations.length; i++) {
-    const cellA = gameboard.getCell(winCombinations[i][0]);
-    const cellB = gameboard.getCell(winCombinations[i][1]);
-    const cellC = gameboard.getCell(winCombinations[i][2]);
+  for (let i = 0; i < WIN_COMBINATIONS.length; i++) {
+    const cellA = gameboard.getCell(WIN_COMBINATIONS[i][0]);
+    const cellB = gameboard.getCell(WIN_COMBINATIONS[i][1]);
+    const cellC = gameboard.getCell(WIN_COMBINATIONS[i][2]);
 
     if (cellA === cellB && cellA === cellC && cellA !== null) {
       return true;
@@ -163,56 +163,10 @@ function checkForWinner(gameboard) {
 }
 
 function getWinner(gameboard, players) {
-  const winCombinations = [
-    // Horizontal combinations
-    [
-      [0, 0],
-      [0, 1],
-      [0, 2],
-    ],
-    [
-      [1, 0],
-      [1, 1],
-      [1, 2],
-    ],
-    [
-      [2, 0],
-      [2, 1],
-      [2, 2],
-    ],
-    // Vertical combinations
-    [
-      [0, 0],
-      [1, 0],
-      [2, 0],
-    ],
-    [
-      [0, 1],
-      [1, 1],
-      [2, 1],
-    ],
-    [
-      [0, 2],
-      [1, 2],
-      [2, 2],
-    ],
-    // Diagonal
-    [
-      [0, 0],
-      [1, 1],
-      [2, 2],
-    ],
-    [
-      [2, 0],
-      [1, 1],
-      [0, 2],
-    ],
-  ];
-
-  for (let i = 0; i < winCombinations.length; i++) {
-    const cellA = gameboard.getCell(winCombinations[i][0]);
-    const cellB = gameboard.getCell(winCombinations[i][1]);
-    const cellC = gameboard.getCell(winCombinations[i][2]);
+  for (let i = 0; i < WIN_COMBINATIONS.length; i++) {
+    const cellA = gameboard.getCell(WIN_COMBINATIONS[i][0]);
+    const cellB = gameboard.getCell(WIN_COMBINATIONS[i][1]);
+    const cellC = gameboard.getCell(WIN_COMBINATIONS[i][2]);
 
     if (cellA === cellB && cellA === cellC && cellA !== null) {
       return players.find((player) => {
