@@ -17,7 +17,7 @@ const gameBoard = (function () {
     // Check if the `coordinates` point to a marked cell (unmarked cells are NULL).
     // Returns a boolean. `true` if marked `false` otherwise.
     const [x, y] = coordinates;
-    return board[x][y] === !null;
+    return board[x][y] !== null;
   };
 
   const getBoard = function () {
