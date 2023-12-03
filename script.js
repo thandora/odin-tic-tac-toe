@@ -133,6 +133,8 @@ const gameflow = function (playerA, playerB) {
 
     if (checkForWinner(gameBoard)) {
       const winner = getWinner(gameBoard, players);
+      winner.win();
+
       console.log(`${winner.name} wins!`);
       gameState = false;
     }
@@ -142,7 +144,39 @@ const gameflow = function (playerA, playerB) {
     }
     turn++;
   } while (gameState);
+
+  console.log(`${playerA.name}: ${playerA.getScore()}`);
+  console.log(`${playerB.name}: ${playerB.getScore()}`);
+
+  nextGame(playerA, playerB);
 };
+
+function nextGame(...playerObjects) {
+  let input;
+  do {
+    input = prompt(`"R" to restart game\n"E" to end game\n"C" to reset scores`);
+    console.log(input);
+  } while (!["r", "e", "c"].includes(input.toLowerCase()));
+
+  if (input === "r") {
+    gameflow();
+  } else if (input === "c") {
+    resetAllScores(...playerObjects);
+    gameflow();
+  }
+}
+
+function resetAllScores(...playerObjects) {
+  for (const player of playerObjects) {
+    player.resetScore();
+  }
+
+  console.log("Scores reset!");
+
+  for (const player of playerObjects) {
+    console.log(`${player.name}: ${player.getScore()}`);
+  }
+}
 
 function switchPlayer(currentPlayerIndex) {
   currentPlayerIndex = currentPlayerIndex == 1 ? 0 : 1;
