@@ -24,7 +24,11 @@ body {
 }
 
 .container-body {
+  padding-top: 20px;
   grid-column: 2 / 3;
+  display: grid;
+  row-gap: 20px;
+  grid-template-rows: repeat(3, min-content);
 }
 
 /* Header */
@@ -37,18 +41,15 @@ body {
 }
 
 .header>h1 {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   margin: auto;
 }
 
 /* Scores section */
 .container-scores {
-  padding-top: 20px;
-  height: 120px;
-  /* border: solid 1px white; */
   display: flex;
   justify-content: center;
-  column-gap: 50px;
+  column-gap: 35px;
 }
 
 .container-scores .player-card {
@@ -56,24 +57,39 @@ body {
 }
 
 .container-scores .player-name {
-  width: 200px;
-  height: 50px;
+  width: 180px;
+  height: 45px;
   margin-bottom: 8px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
 
   background-color: #31304D;
 }
 
 .container-scores .player-score {
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
+.container-scores .versus {
+  align-self: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+/* Game board section */
+
+.container-board .board {
+  height: 600px;
+  background-color: #F0ECE5;
+}
+
+/* Controls section */
+.container-controls {}
 
 /* TODO debugging */
 div {
