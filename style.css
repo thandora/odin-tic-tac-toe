@@ -68,6 +68,7 @@ body {
   font-size: 1.1rem;
   font-weight: 700;
 
+  border-radius: 6px;
   background-color: #31304D;
 }
 
@@ -82,16 +83,32 @@ body {
 }
 
 /* Game board section */
-
 .container-board .board {
   height: 600px;
   background-color: #F0ECE5;
 }
 
 /* Controls section */
-.container-controls {}
+.container-controls .btn-group {
+  display: flex;
+  column-gap: 6px;
+}
+
+.container-controls .btn-group button {
+  font-family: 'Inter', sans-serif;
+  background-color: #31304D;
+  border: none;
+  color: #F0ECE5;
+  padding: 15px 32px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.btn-group button:hover {
+  background-color: #304d39;
+}
 
 /* TODO debugging */
-div {
-  /* border: solid 1px white; */
-}
