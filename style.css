@@ -1,5 +1,7 @@
 html {
+  font-family: 'Inter', sans-serif;
   box-sizing: border-box;
+  color: #F0ECE5;
 }
 
 *,
@@ -14,4 +16,18 @@ body {
 
 .container-main {
   height: 100vh;
+  background-color: #161A30;
+
+  display: grid;
+}
+
+/* Header */
+.header {
+  background-color: #31304D;
+  display: flex;
+}
+
+.header>h1 {
+  font-size: 1.5rem;
+  margin: auto;
 }
