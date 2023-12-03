@@ -19,13 +19,11 @@ body {
   background-color: #161A30;
 
   display: grid;
-  grid-template-rows: repeat(4, 1fr);
+  grid-template-rows: 60px 1fr;
   grid-template-columns: 1fr 600px 1fr;
 }
 
-.container-scores,
-.container-board,
-.container-controls {
+.container-body {
   grid-column: 2 / 3;
 }
 
@@ -43,7 +41,41 @@ body {
   margin: auto;
 }
 
+/* Scores section */
+.container-scores {
+  padding-top: 20px;
+  height: 120px;
+  /* border: solid 1px white; */
+  display: flex;
+  justify-content: center;
+  column-gap: 50px;
+}
+
+.container-scores .player-card {
+  text-align: center;
+}
+
+.container-scores .player-name {
+  width: 200px;
+  height: 50px;
+  margin-bottom: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1.3rem;
+  font-weight: 700;
+
+  background-color: #31304D;
+}
+
+.container-scores .player-score {
+  font-size: 2rem;
+}
+
+
 /* TODO debugging */
 div {
-  border: solid 1px white;
+  /* border: solid 1px white; */
 }
