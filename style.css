@@ -19,15 +19,31 @@ body {
   background-color: #161A30;
 
   display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: 1fr 600px 1fr;
+}
+
+.container-scores,
+.container-board,
+.container-controls {
+  grid-column: 2 / 3;
 }
 
 /* Header */
 .header {
+  grid-column: 1 / -1;
   background-color: #31304D;
   display: flex;
+
+  height: 60px;
 }
 
 .header>h1 {
   font-size: 1.5rem;
   margin: auto;
+}
+
+/* TODO debugging */
+div {
+  border: solid 1px white;
 }
