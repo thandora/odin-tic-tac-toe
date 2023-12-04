@@ -119,8 +119,29 @@ const game = function () {
   const playerBName = document.querySelector(".player-name-b").textContent;
   const playerA = createPlayer(playerAName, "X");
   const playerB = createPlayer(playerAName, "O");
-  
+  const currentPlayer = playerA;
   const players = [playerA, playerB];
+
+  // UI nodes
+  const UINames = [
+    document.querySelector(".player-name-a"),
+    document.querySelector(".player-name-b"),
+  ];
+
+  const scoreBoards = [
+    document.querySelector(".player-score-a"),
+    document.querySelector(".player-score-b"),
+  ];
+
+  (function () {
+    // Initialize parameters.
+    // Initialize player name and scores on UI.
+
+    for (const [i, board] of scoreBoards.entries()) {
+      board.textContent = players[i].getScore();
+    }
+  })();
+
   const start = function (playerA, playerB) {};
 
   // ########
@@ -285,4 +306,4 @@ function parseCoordinates(rawCoordinates) {
 }
 
 updateBoardDisplay();
-gameflow(p1, p2);
+game();
