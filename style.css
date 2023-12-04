@@ -88,10 +88,31 @@ body {
   background-color: #F0ECE5;
 }
 
+.container-board .board-row {
+  height: calc(100% / 3);
+  display: flex;
+}
+
+.board .cell {
+  display: flex;
+  width: calc(100% / 3);
+  height: 100%;
+  color: #161A30;
+  border: solid 1px rgb(0, 0, 0);
+  align-items: center;
+  justify-content: center;
+  font-size: 120px;
+}
+
+.board .cell:hover {
+  cursor: pointer;
+}
+
 /* Controls section */
 .container-controls .btn-group {
   display: flex;
   column-gap: 6px;
+  justify-content: right;
 }
 
 .container-controls .btn-group button {
