@@ -16,6 +16,7 @@ body {
 
 .container-main {
   min-height: 100vh;
+  min-width: min-content;
   background-color: #161A30;
 
   display: grid;

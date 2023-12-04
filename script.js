@@ -114,7 +114,7 @@ function createPlayer(name, markSymbol) {
   return { name, markSymbol, win, getScore, resetScore };
 }
 
-const game = function () {
+const game = (function () {
   const playerAName = document.querySelector(".player-name-a").textContent;
   const playerBName = document.querySelector(".player-name-b").textContent;
   const playerA = createPlayer(playerAName, "X");
@@ -133,13 +133,28 @@ const game = function () {
     document.querySelector(".player-score-b"),
   ];
 
+  // UI - Board cells
+  const cells = document.querySelectorAll(".board .cell");
+  console.log(cells);
+
+  function updateScoreboard() {
+    for (const [i, board] of scoreBoards.entries()) {
+      board.textContent = players[i].getScore();
+    }
+  }
+
+  function updateBoardDisplay(board) {
+    for (const cell of cells) {
+      const [x, y] = parseCoordinates(cell.getAttribute("data-coords"));
+      cell.textContent = board[x][y];
+    }
+  }
+
   (function () {
     // Initialize parameters.
     // Initialize player name and scores on UI.
 
-    for (const [i, board] of scoreBoards.entries()) {
-      board.textContent = players[i].getScore();
-    }
+    updateScoreboard();
   })();
 
   const start = function (playerA, playerB) {};
@@ -183,7 +198,8 @@ const game = function () {
   // console.log(`${playerB.name}: ${playerB.getScore()}`);
 
   // nextGame(playerA, playerB);
-};
+  return { updateBoardDisplay, updateScoreboard };
+})();
 
 function checkBoardState(players) {
   if (checkForWinner(gameBoard)) {
@@ -238,6 +254,7 @@ function switchPlayer(currentPlayerIndex) {
 }
 
 function checkForWinner(gameboard) {
+  // TODO DRY
   for (let i = 0; i < WIN_COMBINATIONS.length; i++) {
     const cellA = gameboard.getCell(WIN_COMBINATIONS[i][0]);
     const cellB = gameboard.getCell(WIN_COMBINATIONS[i][1]);
@@ -251,6 +268,7 @@ function checkForWinner(gameboard) {
 }
 
 function getWinner(gameboard, players) {
+  // TODO DRY
   for (let i = 0; i < WIN_COMBINATIONS.length; i++) {
     const cellA = gameboard.getCell(WIN_COMBINATIONS[i][0]);
     const cellB = gameboard.getCell(WIN_COMBINATIONS[i][1]);
@@ -284,18 +302,6 @@ function printboard(gameboard) {
 const p1 = createPlayer("Alice", "X");
 const p2 = createPlayer("Bob", "O");
 
-// User interface
-const cells = document.querySelectorAll(".board .cell");
-
-function updateBoardDisplay() {
-  for (const cell of cells) {
-    const rawCoords = cell.getAttribute("data-coord");
-    const coordinates = parseCoordinates(rawCoords);
-
-    cell.textContent = gameBoard.getCell(coordinates);
-  }
-}
-
 function parseCoordinates(rawCoordinates) {
   const coordinates = [];
   rawCoordinates.split(",").forEach((x) => {
@@ -304,6 +310,3 @@ function parseCoordinates(rawCoordinates) {
 
   return coordinates;
 }
-
-updateBoardDisplay();
-game();
