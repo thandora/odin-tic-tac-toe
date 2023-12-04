@@ -141,7 +141,9 @@ const gameflow = function (playerA, playerB) {
 
     if (turn === 9) {
       console.log("ITS A DRAW!");
+      gameState = false;
     }
+
     turn++;
   } while (gameState);
 
@@ -158,11 +160,13 @@ function nextGame(...playerObjects) {
     console.log(input);
   } while (!["r", "e", "c"].includes(input.toLowerCase()));
 
-  if (input === "r") {
-    gameflow();
-  } else if (input === "c") {
-    resetAllScores(...playerObjects);
-    gameflow();
+  if (input === "r" || input === "c") {
+    gameBoard.resetBoard();
+
+    if (input === "c") {
+      resetAllScores(...playerObjects);
+    }
+    gameflow(...playerObjects);
   }
 }
 
@@ -231,4 +235,22 @@ const p1 = createPlayer("Alice", "X");
 const p2 = createPlayer("Bob", "O");
 
 // User interface
-const cells = document.querySelectorAll("board .cells");
+const cells = document.querySelectorAll(".board .cell");
+
+for (const cell of cells) {
+  const rawCoords = cell.getAttribute("data-coord");
+  const coordinates = getArrayCoordinates(rawCoords);
+
+  cell.textContent = gameBoard.getCell(coordinates);
+}
+
+function getArrayCoordinates(rawCoordinates) {
+  const coordinates = [];
+  rawCoordinates.split(",").forEach((x) => {
+    coordinates.push(+(x - 1));
+  });
+
+  return coordinates;
+}
+
+gameflow(p1, p2);
