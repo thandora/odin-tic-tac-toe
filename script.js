@@ -46,7 +46,7 @@ const WIN_COMBINATIONS = [
   ],
 ];
 
-const gameBoard = (function () {
+const gameboard = (function () {
   let board = [
     [null, null, null],
     [null, null, null],
@@ -93,7 +93,25 @@ const gameBoard = (function () {
     return true;
   };
 
-  return { getBoard, mark, cellMarked, getCell, resetBoard, isBoardFull };
+  const checkBoardState = function (players) {
+    if (checkForWinner(this)) {
+      const winner = getWinner(this, players);
+      winner.win();
+
+      console.log(`${winner.name} wins!`);
+      gameState = false;
+
+      return 1;
+    }
+
+    // check if board full
+    if (isBoardFull()) {
+      console.log("its a draw");
+      return 0;
+    }
+  };
+
+  return { getBoard, mark, cellMarked, getCell, resetBoard, isBoardFull, checkBoardState };
 })();
 
 function createPlayer(name, markSymbol) {
@@ -135,30 +153,72 @@ const game = (function () {
 
   // UI - Board cells
   const cells = document.querySelectorAll(".board .cell");
-  console.log(cells);
+
+  const initialize = function () {
+    // Initialize parameters.
+    // Initialize player name and scores on UI.
+    updateScoreboard();
+    initCells();
+  };
 
   function updateScoreboard() {
+    // Update scores display on UI
     for (const [i, board] of scoreBoards.entries()) {
       board.textContent = players[i].getScore();
     }
   }
 
+  function initCells() {
+    for (const cell of cells) {
+      cell.addEventListener("click", () => {
+        gameboard.mark();
+      });
+      cell.addEventListener("click", checkBoardState);
+    }
+  }
+
   function updateBoardDisplay(board) {
+    // Update game board display on UI
     for (const cell of cells) {
       const [x, y] = parseCoordinates(cell.getAttribute("data-coords"));
       cell.textContent = board[x][y];
     }
   }
 
-  (function () {
-    // Initialize parameters.
-    // Initialize player name and scores on UI.
+  const newGame = function () {
+    gameboard.resetBoard();
+    updateBoardDisplay();
+  };
 
-    updateScoreboard();
-  })();
+  function getWinner(gameboard, players) {
+    // TODO DRY
+    for (let i = 0; i < WIN_COMBINATIONS.length; i++) {
+      const cellA = gameboard.getCell(WIN_COMBINATIONS[i][0]);
+      const cellB = gameboard.getCell(WIN_COMBINATIONS[i][1]);
+      const cellC = gameboard.getCell(WIN_COMBINATIONS[i][2]);
 
-  const start = function (playerA, playerB) {};
+      if (cellA === cellB && cellA === cellC && cellA !== null) {
+        return players.find((player) => {
+          return player.markSymbol === cellA;
+        });
+      }
+    }
+  }
 
+  function checkForWinner(gameboard) {
+    // TODO DRY
+    for (let i = 0; i < WIN_COMBINATIONS.length; i++) {
+      const cellA = gameboard.getCell(WIN_COMBINATIONS[i][0]);
+      const cellB = gameboard.getCell(WIN_COMBINATIONS[i][1]);
+      const cellC = gameboard.getCell(WIN_COMBINATIONS[i][2]);
+
+      if (cellA === cellB && cellA === cellC && cellA !== null) {
+        return true;
+      }
+    }
+    return false;
+  }
+  return { initialize, newGame, updateBoardDisplay, updateScoreboard };
   // ########
   // console version below this line
   // ########
@@ -198,26 +258,7 @@ const game = (function () {
   // console.log(`${playerB.name}: ${playerB.getScore()}`);
 
   // nextGame(playerA, playerB);
-  return { updateBoardDisplay, updateScoreboard };
 })();
-
-function checkBoardState(players) {
-  if (checkForWinner(gameBoard)) {
-    const winner = getWinner(gameBoard, players);
-    winner.win();
-
-    console.log(`${winner.name} wins!`);
-    gameState = false;
-
-    return 1;
-  }
-
-  // check if board full
-  if (gameBoard.isBoardFull()) {
-    console.log("its a draw");
-    return 0;
-  }
-}
 
 function nextGame(...playerObjects) {
   let input;
@@ -227,7 +268,7 @@ function nextGame(...playerObjects) {
   } while (!["n", "e", "r"].includes(input.toLowerCase()));
 
   if (input === "n" || input === "c") {
-    gameBoard.resetBoard();
+    gameboard.resetBoard();
 
     if (input === "c") {
       resetAllScores(...playerObjects);
@@ -253,35 +294,6 @@ function switchPlayer(currentPlayerIndex) {
   return currentPlayerIndex;
 }
 
-function checkForWinner(gameboard) {
-  // TODO DRY
-  for (let i = 0; i < WIN_COMBINATIONS.length; i++) {
-    const cellA = gameboard.getCell(WIN_COMBINATIONS[i][0]);
-    const cellB = gameboard.getCell(WIN_COMBINATIONS[i][1]);
-    const cellC = gameboard.getCell(WIN_COMBINATIONS[i][2]);
-
-    if (cellA === cellB && cellA === cellC && cellA !== null) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function getWinner(gameboard, players) {
-  // TODO DRY
-  for (let i = 0; i < WIN_COMBINATIONS.length; i++) {
-    const cellA = gameboard.getCell(WIN_COMBINATIONS[i][0]);
-    const cellB = gameboard.getCell(WIN_COMBINATIONS[i][1]);
-    const cellC = gameboard.getCell(WIN_COMBINATIONS[i][2]);
-
-    if (cellA === cellB && cellA === cellC && cellA !== null) {
-      return players.find((player) => {
-        return player.markSymbol === cellA;
-      });
-    }
-  }
-}
-
 function askUserCoordinates() {
   let input = prompt("Coordinates: (1, 1) through (3, 3)");
   if (input !== null) {
@@ -294,7 +306,7 @@ function askUserCoordinates() {
 }
 
 function printboard(gameboard) {
-  for (let i = 0; i < gameBoard.getBoard().length; i++) {
+  for (let i = 0; i < gameboard.getBoard().length; i++) {
     console.log(gameboard.getBoard()[i]);
   }
 }
@@ -310,3 +322,5 @@ function parseCoordinates(rawCoordinates) {
 
   return coordinates;
 }
+
+game.initialize();
