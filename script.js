@@ -230,8 +230,5 @@ function printboard(gameboard) {
 const p1 = createPlayer("Alice", "X");
 const p2 = createPlayer("Bob", "O");
 
-const btn = document.querySelector("#btn");
-btn.addEventListener("click", () => {
-  gameBoard.resetBoard();
-  gameflow(p1, p2);
-});
+// User interface
+const cells = document.querySelectorAll("board .cells");

@@ -15,7 +15,7 @@ body {
 }
 
 .container-main {
-  height: 100vh;
+  min-height: 100vh;
   background-color: #161A30;
 
   display: grid;
@@ -24,7 +24,7 @@ body {
 }
 
 .container-body {
-  padding-top: 20px;
+  padding: 20px 0;
   grid-column: 2 / 3;
   display: grid;
   row-gap: 20px;
