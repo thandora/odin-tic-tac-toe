@@ -141,11 +141,10 @@ const game = (function () {
   const playerAName = document.querySelector(".player-name-a").textContent;
   const playerBName = document.querySelector(".player-name-b").textContent;
   const playerA = createPlayer(playerAName, "X");
-  const playerB = createPlayer(playerAName, "O");
-  const currentPlayer = playerA;
+  const playerB = createPlayer(playerBName, "O");
   const players = [playerA, playerB];
-
-  let currentMark = playerA.getMark();
+  let currentPlayer = players[0];
+  let currentMark = currentPlayer.getMark();
 
   // UI nodes
   const UINames = [
@@ -180,8 +179,9 @@ const game = (function () {
       cell.addEventListener("click", () => {
         const rawCoords = cell.getAttribute("data-coords");
         const coords = parseCoordinates(rawCoords);
-        const currentMark = "X";
+
         gameboard.mark(coords, currentMark);
+        switchPlayer();
         updateCellDisplay(cell, coords, currentMark);
       });
     }
@@ -202,6 +202,8 @@ const game = (function () {
   }
 
   const newGame = function () {
+    currentPlayer = players[0];
+    currentMark = currentPlayer.getMark();
     gameboard.resetBoard();
     updateBoardDisplay();
   };
@@ -234,6 +236,13 @@ const game = (function () {
     }
     return false;
   }
+
+  function switchPlayer() {
+    const nextPlayerIndex = players.findIndex((p) => p !== currentPlayer);
+    currentPlayer = players[nextPlayerIndex];
+    currentMark = currentPlayer.getMark();
+  }
+
   return { initialize, newGame, updateBoardDisplay, updateScoreboard };
   // ########
   // console version below this line
@@ -303,22 +312,6 @@ function resetAllScores(...playerObjects) {
   for (const player of playerObjects) {
     console.log(`${player.name}: ${player.getScore()}`);
   }
-}
-
-function switchPlayer(currentPlayerIndex) {
-  currentPlayerIndex = currentPlayerIndex == 1 ? 0 : 1;
-  return currentPlayerIndex;
-}
-
-function askUserCoordinates() {
-  let input = prompt("Coordinates: (1, 1) through (3, 3)");
-  if (input !== null) {
-    input = input.split("").map((x) => +x - 1);
-  }
-
-  return input;
-  // -1 is for "real" coordinates
-  // since input is assumed to be 1-indexed. (first cell is at (1, 1))
 }
 
 function printboard() {
