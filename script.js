@@ -114,8 +114,9 @@ const gameboard = (function () {
   return { getBoard, mark, cellMarked, getCell, resetBoard, isBoardFull, checkBoardState };
 })();
 
-function createPlayer(name, markSymbol) {
+function createPlayer(name, mark) {
   let score = 0;
+  const markSymbol = mark;
 
   const getScore = function () {
     return score;
@@ -129,16 +130,22 @@ function createPlayer(name, markSymbol) {
     score++;
   };
 
-  return { name, markSymbol, win, getScore, resetScore };
+  const getMark = function () {
+    return markSymbol;
+  };
+
+  return { name, getMark, win, getScore, resetScore };
 }
 
-const game = (function () {
+const game = (function (gameboard) {
   const playerAName = document.querySelector(".player-name-a").textContent;
   const playerBName = document.querySelector(".player-name-b").textContent;
   const playerA = createPlayer(playerAName, "X");
   const playerB = createPlayer(playerAName, "O");
   const currentPlayer = playerA;
   const players = [playerA, playerB];
+
+  let currentMark = playerA.getMark();
 
   // UI nodes
   const UINames = [
@@ -171,18 +178,27 @@ const game = (function () {
   function initCells() {
     for (const cell of cells) {
       cell.addEventListener("click", () => {
-        gameboard.mark();
+        const rawCoords = cell.getAttribute("data-coords");
+        const coords = parseCoordinates(rawCoords);
+        const currentMark = "X";
+        gameboard.mark(coords, currentMark);
+        updateCellDisplay(cell, coords, currentMark);
       });
-      cell.addEventListener("click", checkBoardState);
     }
   }
 
-  function updateBoardDisplay(board) {
+  function updateBoardDisplay() {
     // Update game board display on UI
+    const board = gameboard.getBoard();
+
     for (const cell of cells) {
       const [x, y] = parseCoordinates(cell.getAttribute("data-coords"));
       cell.textContent = board[x][y];
     }
+  }
+
+  function updateCellDisplay(cell, coordinates) {
+    cell.textContent = gameboard.getCell(coordinates);
   }
 
   const newGame = function () {
@@ -258,7 +274,7 @@ const game = (function () {
   // console.log(`${playerB.name}: ${playerB.getScore()}`);
 
   // nextGame(playerA, playerB);
-})();
+})(gameboard);
 
 function nextGame(...playerObjects) {
   let input;
