@@ -104,7 +104,6 @@ const gameboard = (function () {
       return 1;
     }
 
-    // check if board full
     if (isBoardFull()) {
       console.log("its a draw");
       return 0;
@@ -177,13 +176,26 @@ const game = (function () {
   function initCells() {
     for (const cell of cells) {
       cell.addEventListener("click", () => {
-        const rawCoords = cell.getAttribute("data-coords");
-        const coords = parseCoordinates(rawCoords);
-
-        gameboard.mark(coords, currentMark);
-        switchPlayer();
-        updateCellDisplay(cell, coords, currentMark);
+        gameflow(cell);
       });
+    }
+  }
+
+  function gameflow(cell) {
+    const rawCoords = cell.getAttribute("data-coords");
+    const coords = parseCoordinates(rawCoords);
+
+    if (!checkForWinner()) {
+      if (!gameboard.cellMarked(coords)) {
+        gameboard.mark(coords, currentMark);
+        updateCellDisplay(cell, coords, currentMark);
+        switchPlayer();
+      }
+    }
+
+    if (checkForWinner()) {
+      let winner = getWinner(players);
+      console.log(winner.name);
     }
   }
 
@@ -217,7 +229,7 @@ const game = (function () {
 
       if (cellA === cellB && cellA === cellC && cellA !== null) {
         return players.find((player) => {
-          return player.markSymbol === cellA;
+          return player.getMark() === cellA;
         });
       }
     }
@@ -244,45 +256,6 @@ const game = (function () {
   }
 
   return { initialize, newGame, updateBoardDisplay, updateScoreboard };
-  // ########
-  // console version below this line
-  // ########
-  // let currentPlayerIndex = 0;
-  // const players = [playerA, playerB];
-
-  // let turn = 1;
-  // let gameState = true;
-  // do {
-  //   const currentPlayer = players[currentPlayerIndex];
-  //   console.log(`${currentPlayer.name}'s turn (${currentPlayer.markSymbol})`);
-  //   // Transform "XY" to [X int, Y int]
-  //   const coordinates = askUserCoordinates();
-  //   if (coordinates === null) {
-  //     gameState = false;
-  //     break;
-  //   }
-  //   // -1 is for "real" coordinates
-  //   // since input is assuming indexed 1. (first cell is at (1, 1))
-
-  //   if (gameBoard.cellMarked(coordinates)) {
-  //     console.log(`(${coordinates.map((x) => x + 1)}) is already marked. Change location.`);
-  //     continue;
-  //   } else {
-  //     gameBoard.mark(coordinates, currentPlayer.markSymbol);
-  //   }
-
-  //   printboard(gameBoard);
-  //   currentPlayerIndex = switchPlayer(currentPlayerIndex);
-
-  //   checkBoardState(players);
-
-  //   turn++;
-  // } while (gameState);
-
-  // console.log(`${playerA.name}: ${playerA.getScore()}`);
-  // console.log(`${playerB.name}: ${playerB.getScore()}`);
-
-  // nextGame(playerA, playerB);
 })();
 
 function nextGame(...playerObjects) {
