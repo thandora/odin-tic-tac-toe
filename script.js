@@ -137,7 +137,7 @@ function createPlayer(name, mark) {
   return { name, getMark, win, getScore, resetScore };
 }
 
-const game = (function (gameboard) {
+const game = (function () {
   const playerAName = document.querySelector(".player-name-a").textContent;
   const playerBName = document.querySelector(".player-name-b").textContent;
   const playerA = createPlayer(playerAName, "X");
@@ -206,7 +206,7 @@ const game = (function (gameboard) {
     updateBoardDisplay();
   };
 
-  function getWinner(gameboard, players) {
+  function getWinner(players) {
     // TODO DRY
     for (let i = 0; i < WIN_COMBINATIONS.length; i++) {
       const cellA = gameboard.getCell(WIN_COMBINATIONS[i][0]);
@@ -221,7 +221,7 @@ const game = (function (gameboard) {
     }
   }
 
-  function checkForWinner(gameboard) {
+  function checkForWinner() {
     // TODO DRY
     for (let i = 0; i < WIN_COMBINATIONS.length; i++) {
       const cellA = gameboard.getCell(WIN_COMBINATIONS[i][0]);
@@ -274,7 +274,7 @@ const game = (function (gameboard) {
   // console.log(`${playerB.name}: ${playerB.getScore()}`);
 
   // nextGame(playerA, playerB);
-})(gameboard);
+})();
 
 function nextGame(...playerObjects) {
   let input;
@@ -321,7 +321,7 @@ function askUserCoordinates() {
   // since input is assumed to be 1-indexed. (first cell is at (1, 1))
 }
 
-function printboard(gameboard) {
+function printboard() {
   for (let i = 0; i < gameboard.getBoard().length; i++) {
     console.log(gameboard.getBoard()[i]);
   }
