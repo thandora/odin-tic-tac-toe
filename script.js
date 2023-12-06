@@ -174,28 +174,34 @@ const game = (function () {
   }
 
   function initCells() {
+    let gameRun = true;
     for (const cell of cells) {
       cell.addEventListener("click", () => {
         gameflow(cell);
       });
     }
-  }
 
-  function gameflow(cell) {
-    const rawCoords = cell.getAttribute("data-coords");
-    const coords = parseCoordinates(rawCoords);
+    function gameflow(cell) {
+      const rawCoords = cell.getAttribute("data-coords");
+      const coords = parseCoordinates(rawCoords);
 
-    if (!checkForWinner()) {
-      if (!gameboard.cellMarked(coords)) {
-        gameboard.mark(coords, currentMark);
-        updateCellDisplay(cell, coords, currentMark);
-        switchPlayer();
+      if (gameRun) {
+        if (!checkForWinner()) {
+          if (!gameboard.cellMarked(coords)) {
+            gameboard.mark(coords, currentMark);
+            updateCellDisplay(cell, coords, currentMark);
+            switchPlayer();
+          }
+        }
+
+        if (checkForWinner()) {
+          let winner = getWinner(players);
+          winner.win();
+          updateScoreboard();
+          gameRun = false;
+          console.log(winner.name);
+        }
       }
-    }
-
-    if (checkForWinner()) {
-      let winner = getWinner(players);
-      console.log(winner.name);
     }
   }
 
@@ -218,6 +224,7 @@ const game = (function () {
     currentMark = currentPlayer.getMark();
     gameboard.resetBoard();
     updateBoardDisplay();
+    initCells();
   };
 
   function getWinner(players) {
