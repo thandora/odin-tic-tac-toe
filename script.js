@@ -165,13 +165,6 @@ const game = (function () {
   // UI - Board cells
   const cells = document.querySelectorAll(".board .cell");
 
-  const initialize = function () {
-    // Initialize parameters.
-    // Initialize player name and scores on UI.
-    updateScoreboard();
-    initCells();
-  };
-
   function updateScoreboard() {
     // Update scores display on UI
     for (const [i, board] of scoreBoards.entries()) {
@@ -179,8 +172,15 @@ const game = (function () {
     }
   }
 
+  function initialize() {
+    // Function REQUIRED to set initial round.
+    updateScoreboard();
+    initCells();
+    newGame();
+  }
+
+  let gameRun = true;
   function initCells() {
-    let gameRun = true;
     for (const cell of cells) {
       cell.addEventListener("click", () => {
         gameflow(cell);
@@ -226,13 +226,12 @@ const game = (function () {
   }
 
   const newGame = function () {
-    if (checkForWinner()) {
-      currentPlayer = players[0];
-      currentMark = currentPlayer.getMark();
-      gameboard.resetBoard();
-      updateBoardDisplay();
-      initialize();
-    }
+    currentPlayer = players[0];
+    currentMark = currentPlayer.getMark();
+    gameRun = true;
+    gameboard.resetBoard();
+    updateScoreboard();
+    updateBoardDisplay();
   };
 
   function getWinner(players) {
@@ -270,37 +269,27 @@ const game = (function () {
     currentMark = currentPlayer.getMark();
   }
 
-  return { initialize, newGame, updateBoardDisplay, updateScoreboard, checkForWinner };
-})();
-
-function nextGame(...playerObjects) {
-  let input;
-  do {
-    input = prompt(`"N" for new game\n"E" to end game\n"R" to reset scores`);
-    console.log(input);
-  } while (!["n", "e", "r"].includes(input.toLowerCase()));
-
-  if (input === "n" || input === "c") {
-    gameboard.resetBoard();
-
-    if (input === "c") {
-      resetAllScores(...playerObjects);
+  function resetAllScores() {
+    for (const player of players) {
+      player.resetScore();
     }
-    gameflow(...playerObjects);
-  }
-}
 
-function resetAllScores(...playerObjects) {
-  for (const player of playerObjects) {
-    player.resetScore();
+    console.log("Scores reset!");
+
+    for (const player of players) {
+      console.log(`${player.name}: ${player.getScore()}`);
+    }
   }
 
-  console.log("Scores reset!");
-
-  for (const player of playerObjects) {
-    console.log(`${player.name}: ${player.getScore()}`);
-  }
-}
+  return {
+    initialize,
+    newGame,
+    updateBoardDisplay,
+    updateScoreboard,
+    checkForWinner,
+    resetAllScores,
+  };
+})();
 
 function printboard() {
   for (let i = 0; i < gameboard.getBoard().length; i++) {
@@ -327,3 +316,7 @@ const btnChangeNames = document.querySelector(".btn-change-names");
 // Game flow
 game.initialize();
 btnNewGame.addEventListener("click", game.newGame);
+btnResetScore.addEventListener("click", () => {
+  game.resetAllScores();
+  game.newGame();
+});
