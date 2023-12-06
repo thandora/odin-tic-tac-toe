@@ -1,5 +1,3 @@
-// Variables for testing.
-const DEBUG_NTURNS = 5;
 const WIN_COMBINATIONS = [
   // Horizontal combinations
   [
@@ -110,7 +108,15 @@ const gameboard = (function () {
     }
   };
 
-  return { getBoard, mark, cellMarked, getCell, resetBoard, isBoardFull, checkBoardState };
+  return {
+    getBoard,
+    mark,
+    cellMarked,
+    getCell,
+    resetBoard,
+    isBoardFull,
+    checkBoardState,
+  };
 })();
 
 function createPlayer(name, mark) {
@@ -220,11 +226,13 @@ const game = (function () {
   }
 
   const newGame = function () {
-    currentPlayer = players[0];
-    currentMark = currentPlayer.getMark();
-    gameboard.resetBoard();
-    updateBoardDisplay();
-    initCells();
+    if (checkForWinner()) {
+      currentPlayer = players[0];
+      currentMark = currentPlayer.getMark();
+      gameboard.resetBoard();
+      updateBoardDisplay();
+      initialize();
+    }
   };
 
   function getWinner(players) {
@@ -262,7 +270,7 @@ const game = (function () {
     currentMark = currentPlayer.getMark();
   }
 
-  return { initialize, newGame, updateBoardDisplay, updateScoreboard };
+  return { initialize, newGame, updateBoardDisplay, updateScoreboard, checkForWinner };
 })();
 
 function nextGame(...playerObjects) {
@@ -312,4 +320,10 @@ function parseCoordinates(rawCoordinates) {
   return coordinates;
 }
 
+const btnNewGame = document.querySelector(".btn-new-game");
+const btnResetScore = document.querySelector(".btn-reset-score");
+const btnChangeNames = document.querySelector(".btn-change-names");
+
+// Game flow
 game.initialize();
+btnNewGame.addEventListener("click", game.newGame);
