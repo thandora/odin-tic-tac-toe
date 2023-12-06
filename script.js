@@ -317,6 +317,8 @@ const btnChangeNames = document.querySelector(".btn-change-names");
 game.initialize();
 btnNewGame.addEventListener("click", game.newGame);
 btnResetScore.addEventListener("click", () => {
-  game.resetAllScores();
-  game.newGame();
+  if (confirm("Reset score? This will also reset the board.")) {
+    game.resetAllScores();
+    game.newGame();
+  }
 });
