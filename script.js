@@ -95,8 +95,6 @@ const gameboard = (function () {
     if (checkForWinner(this)) {
       const winner = getWinner(this, players);
       winner.win();
-
-      console.log(`${winner.name} wins!`);
       gameState = false;
 
       return 1;
@@ -123,6 +121,10 @@ function createPlayer(name, mark) {
   let score = 0;
   const markSymbol = mark;
 
+  const getName = function () {
+    return name;
+  };
+
   const getScore = function () {
     return score;
   };
@@ -139,7 +141,7 @@ function createPlayer(name, mark) {
     return markSymbol;
   };
 
-  return { name, getMark, win, getScore, resetScore };
+  return { getName, getMark, win, getScore, resetScore };
 }
 
 const game = (function () {
@@ -157,6 +159,8 @@ const game = (function () {
     document.querySelector(".player-name-b"),
   ];
 
+  const playerCards = Array.from(document.querySelectorAll(".container-scores .player-card"));
+
   const scoreBoards = [
     document.querySelector(".player-score-a"),
     document.querySelector(".player-score-b"),
@@ -172,8 +176,25 @@ const game = (function () {
     }
   }
 
+  function updateActivePlayer() {
+    for (const card of playerCards) {
+      const cardName = card.querySelector(".player-name").textContent;
+
+      if (currentPlayer.getName() === cardName) {
+        card.classList.add("player-active");
+      } else {
+        card.classList.remove("player-active");
+      }
+    }
+  }
+
+  function initPlayerStatus() {
+    playerCards[0].classList.toggle("player-active");
+  }
+
   function initialize() {
     // Function REQUIRED to set initial round.
+    initPlayerStatus();
     updateScoreboard();
     initCells();
     newGame();
@@ -197,6 +218,11 @@ const game = (function () {
             gameboard.mark(coords, currentMark);
             updateCellDisplay(cell, coords, currentMark);
             switchPlayer();
+            updateActivePlayer();
+          }
+
+          if (gameboard.isBoardFull()) {
+            gameRun = false;
           }
         }
 
@@ -205,7 +231,18 @@ const game = (function () {
           winner.win();
           updateScoreboard();
           gameRun = false;
-          console.log(winner.name);
+        }
+
+        if (gameRun === false) {
+          // Mark both UI name as inactive
+          for (const card of playerCards) {
+            const cardName = card.querySelector(".player-name").textContent;
+            if (currentPlayer.getName() === cardName) {
+              card.classList.remove("player-active");
+            } else {
+              card.classList.remove("player-active");
+            }
+          }
         }
       }
     }
@@ -228,6 +265,8 @@ const game = (function () {
   const newGame = function () {
     currentPlayer = players[0];
     currentMark = currentPlayer.getMark();
+    updateActivePlayer();
+
     gameRun = true;
     gameboard.resetBoard();
     updateScoreboard();
@@ -272,12 +311,6 @@ const game = (function () {
   function resetAllScores() {
     for (const player of players) {
       player.resetScore();
-    }
-
-    console.log("Scores reset!");
-
-    for (const player of players) {
-      console.log(`${player.name}: ${player.getScore()}`);
     }
   }
 

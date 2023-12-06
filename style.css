@@ -73,7 +73,12 @@ body {
   background-color: #31304D;
 }
 
-.container-scores .player-score {
+/* .player-active is toggled in script */
+.container-scores .player-active .player-name {
+  background-color: rgb(79, 190, 68);
+}
+
+.container-scores .player-active .container-scores .player-score {
   font-size: 1.8rem;
 }
 
