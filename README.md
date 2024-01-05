@@ -11,3 +11,8 @@ This is a brute force attempt I can think of at the top of my head. I've also th
 ## Palette
 
 [colorhunt](https://colorhunt.co/palette/161a3031304db6bbc4f0ece5)
+
+## Todo
+
+- Implement changing names.
+- Winner screen and highlighting winning straight.
